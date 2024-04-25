@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+<configuration>
+	<typeAliases>
+  		<!-- Mapper.xml에서 resultType에 패키지명은 생략 가능 -->
+		<package name="com.spring.vo" />
+	</typeAliases>
+</configuration>

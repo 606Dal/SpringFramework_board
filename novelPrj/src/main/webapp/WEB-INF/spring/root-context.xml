@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/jdbc 
+		http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/context
+   		http://www.springframework.org/schema/context/spring-context.xsd
+   		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://mybatis.org/schema/mybatis-spring
+    	http://mybatis.org/schema/mybatis-spring.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+		<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			<!-- 없어도 연결 되는 지 확인 -> 테스트에서는 됨 -->
+			<!-- <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" /> -->
+			<!-- <property name="url" value="jdbc:mysql://127.0.0.1:3306/spring_prj" /> -->
+			
+			<!-- log4j2-jdbc를 위한 드라이버와 url 변경 -->
+			<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy" />
+			<property name="url" value="jdbc:log4jdbc:mysql://127.0.0.1:3306/spring_prj" />
+			<property name="username" value="" />
+			<property name="password" value="" />
+		</bean>
+		
+		<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate"
+			destroy-method="clearCache">
+			<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
+		</bean>
+		
+		<bean id="sqlSessionFactory"
+			class="org.mybatis.spring.SqlSessionFactoryBean">
+			<property name="dataSource" ref="dataSource" />
+			<property name="configLocation" 
+				value="classpath:/mybatis-config.xml"/>
+			<property name="mapperLocations"
+				value="classpath:mappers/**/*.xml" />
+		</bean>
+		
+		<!-- @Repository로 설정되어있는 걸 DAO로 인식하게 함 -->
+		<context:component-scan base-package="com.spring.dao" />
+		<!-- 서비스 안의 객체를 인식하도록 -->
+		<context:component-scan base-package="com.spring.service" />
+		
+</beans>

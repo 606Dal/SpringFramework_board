@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration>
+
+	<!-- <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" /> -->
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+<!--             <pattern>%clr(%d{HH:mm:ss.SSS}){magenta} [%thread] %-5level : %logger{36} -%kvp- %msg%n</pattern> -->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level : %logger{36} -%kvp- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+	<!-- log4jdbc-log4j2 환경 설정 -->
+		<logger name = "jdbc.sqlonly" 	level="DEBUG" />
+		<logger name = "jdbc.sqltiming" level="INFO" />
+		<logger name = "jdbc.audit"		level="WARN" />
+		<logger name = "jdbc.resultset" level="ERROR" />
+		<logger name = "jdbc.resultsettable" level="INFO" />
+		<logger name = "jdbc.connection"	 level="INFO" />
+		
+	<!-- 아래 형태로는 적용 안 됨
+	<Loggers>
+        <Logger name="jdbc.sqlonly" level="DEBUG" additivity="false">
+            <AppenderRef ref="CONSOLE" />
+        </Logger>
+        <Logger name="jdbc.audit" level="WARN" additivity="false">
+            <AppenderRef ref="CONSOLE" />
+        </Logger>
+        <Logger name="jdbc.sqltiming" level="INFO" additivity="false">
+            <AppenderRef ref="CONSOLE" />
+        </Logger>
+        <Logger name="jdbc.resultset" level="ERROR" additivity="false">
+            <AppenderRef ref="CONSOLE" />
+        </Logger>
+        <Logger name="jdbc.resultsettable" level="ERROR" additivity="false"> 
+            <appender-ref ref="CONSOLE" />
+        </Logger>
+        <Logger name="jdbc.connection" level="INFO" additivity="false"> 
+            <appender-ref ref="CONSOLE" />
+        </Logger>
+    </Loggers> -->
+	
+</configuration>
