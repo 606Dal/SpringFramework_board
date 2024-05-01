@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,38 +57,74 @@ public class BbsController {
 	}
 	
 	//글 상세보기
-	@RequestMapping(value = "/read", method = RequestMethod.GET)
-	  //@RequestParam : 글 번호(=bid)를 전달(jsp 에서 a 태그로)받기 위한 어노테이션
-	public void read(@RequestParam("bid") int bid, Model model) throws Exception {
+	@RequestMapping(value = "/readPage", method = RequestMethod.GET)
+			//@RequestParam : 글 번호(=bid)를 전달(jsp 에서 a 태그로)받기 위한 어노테이션
+	public void read(@RequestParam("bid") int bid,
+			@ModelAttribute PageCriteria pageCriteria,
+			Model model) throws Exception {
+		
 		model.addAttribute(bsvc.read(bid)); //bid를 받아와서 넘겨 줌
 		//addAttribute에 key를 사용하지 않았을 경우 key는 클래스의 이름을 자동으로 소문자로 시작해서 저장됨.
 		//원래 bsvc.read의 리턴 값은 BbsVO -> bbsVO(=key)
 	}
 	
+//	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+//	public String delete(@RequestParam("bid") int bid, RedirectAttributes reAttr) throws Exception {
+//		
+//		bsvc.remove(bid);
+//		
+//		reAttr.addFlashAttribute("result", "삭제 성공"); //list.jsp에서 result로 받음
+//		return "redirect:/bbs/list";
+//	}
+	
 	//글 삭제(read.jsp-form에 post 설정함)
-	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public String delete(@RequestParam("bid") int bid, RedirectAttributes reAttr) throws Exception {
+	@RequestMapping(value = "/delPage", method = RequestMethod.POST)
+	public String delete(@RequestParam("bid") int bid, PageCriteria pageCriteria, RedirectAttributes reAttr) throws Exception {
 		
 		bsvc.remove(bid);
 		
+		reAttr.addAttribute("page", pageCriteria.getPage());
+		reAttr.addAttribute("numPerPage", pageCriteria.getNumPerPage());
+		
 		reAttr.addFlashAttribute("result", "삭제 성공"); //list.jsp에서 result로 받음
-		return "redirect:/bbs/list";
+		return "redirect:/bbs/pageList";
 	}
 	
 	//글 수정(조회 페이지)
-	@RequestMapping(value = "/modify", method = RequestMethod.GET)
-	public void modifyGET(int bid, Model model) throws Exception{
+//	@RequestMapping(value = "/modify", method = RequestMethod.GET)
+//	public void modifyGET(int bid, Model model) throws Exception{
+//		model.addAttribute(bsvc.read(bid)); //bbsVO로 넘어옴
+//	}
+//	@RequestMapping(value = "/modify", method = RequestMethod.POST)
+//	public String modifyPOST(BbsVO bvo, RedirectAttributes reAttr) throws Exception{
+//		logger.info("modifyPOST().......");
+//		
+//		bsvc.modyfi(bvo);
+//		reAttr.addFlashAttribute("result", "수정 완료");
+//		
+//		return "redirect:/bbs/list";
+//	}
+	
+	//글 수정(조회 페이지)
+	@RequestMapping(value = "/modifyPage", method = RequestMethod.GET)
+	public void modifyGET(@RequestParam("bid") int bid,
+		@ModelAttribute("pageCriteria") PageCriteria pageCriteria, 
+		Model model) throws Exception{
+		
 		model.addAttribute(bsvc.read(bid)); //bbsVO로 넘어옴
 	}
 		//수정 처리
-	@RequestMapping(value = "/modify", method = RequestMethod.POST)
-	public String modifyPOST(BbsVO bvo, RedirectAttributes reAttr) throws Exception{
+	@RequestMapping(value = "/modifyPage", method = RequestMethod.POST)
+	public String modifyPOST(BbsVO bvo, PageCriteria pageCriteria, RedirectAttributes reAttr) throws Exception{
 		logger.info("modifyPOST().......");
 		
-		bsvc.modyfi(bvo);
-		reAttr.addFlashAttribute("result", "수정 완료");
+		bsvc.modify(bvo);
+		//데이터 유지를 위해서 담아줌
+		reAttr.addAttribute("page", pageCriteria.getPage());
+		reAttr.addAttribute("numPerPage", pageCriteria.getNumPerPage());
 		
-		return "redirect:/bbs/list";
+		reAttr.addFlashAttribute("result", "수정 완료");
+		return "redirect:/bbs/pageList";
 	}
 	
 	//페이지 당 글 개수 조정(테스트)
@@ -114,4 +151,5 @@ public class BbsController {
 		// model > pagingMaker > Criteria(페이징메이커 안에 포함)
 		model.addAttribute("pagingMaker", pagingMaker);
 	}
+	
 }

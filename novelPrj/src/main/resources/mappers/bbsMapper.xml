@@ -75,4 +75,56 @@
   	]]>
   </select>
   
+  <!-- MyBatis에서 제공하는 <include>, <sql> 중복되는 내용 처리 가능. -->
+  <!-- 1. sql로 문장 정의 -->
+  <sql id = "findSQL">
+  <if test="findType != null">
+  		<if test="findType == 'S'.toString()">
+  			and subject like CONCAT('%', #{keyword}, '%')
+  		</if>
+  		<if test="findType == 'C'.toString()">
+  			and content like CONCAT('%', #{keyword}, '%')
+  		</if>
+  		<if test="findType == 'W'.toString()">
+  			and writer like CONCAT('%', #{keyword}, '%')
+  		</if>
+  		<if test="findType == 'SC'.toString()">
+  			and (subject like CONCAT('%', #{keyword}, '%')
+  				 or content like CONCAT('%', #{keyword}, '%'))
+  		</if>
+  		<if test="findType == 'CW'.toString()">
+  			and (content like CONCAT('%', #{keyword}, '%')
+  				 or writer like CONCAT('%', #{keyword}, '%'))
+  		</if>
+  		<if test="findType == 'SCW'.toString()">
+  			and (subject like CONCAT('%', #{keyword}, '%')
+  				 or content like CONCAT('%', #{keyword}, '%') 
+  				 or writer like CONCAT('%', #{keyword}, '%'))
+  		</if>
+  	</if>
+  </sql>
+  <!-- 검색 기능 - 마이바티스 표현식을 이용해 검색 조건 설정 -->
+  <select id="listFind" resultType="BbsVO">
+  <![CDATA[
+	  	select * from tbl_board
+	  	where bid > 0
+  ]]> <!-- 표현식 부분은 CDATA 끊어주는 게 좋음  -->
+  	<!-- 2.include 사용. refid: 참고하는 id -->
+	  	<include refid="findSQL"></include>
+  <![CDATA[  	
+	  	order by bid desc
+	  	limit #{startPage}, #{numPerPage}
+  ]]>
+  </select>
+  <!-- 검색된 글의 총 개수 -->
+  <select id="findCountData" resultType="int">
+  <![CDATA[
+	  	select count(bid)
+	  	from tbl_board
+	  	where bid > 0
+  ]]>
+	  	<include refid="findSQL"></include>
+  </select>
+  
+  
 </mapper>

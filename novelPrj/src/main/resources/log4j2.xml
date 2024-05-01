@@ -66,7 +66,7 @@
 			<AppenderRef ref="console" />
 			<AppenderRef ref="File_Appender" />
 		</Logger>
-		<!-- 딱히 로그에도 안 나와서 필요 없음
+		<!-- import 바꿔도 여기 건 안 나옴
 		<logger name="jdbc.sqlonly" level="DEBUG" additivity="false">
 			<appender-ref ref="console" />
 		</logger>

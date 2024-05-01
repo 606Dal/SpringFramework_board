@@ -51,9 +51,19 @@ public class PagingMaker {
 		
 		return uriComponents.toUriString();
 	}
+	//검색용 uri 생성
+	public String makeFind(int page) {
+		UriComponents uriComponents = UriComponentsBuilder.newInstance()
+				.queryParam("page", page)
+				.queryParam("numPerPage", cri.getNumPerPage())
+				.queryParam("findType", ((FindCriteria)cri).getFindType())
+				.queryParam("keyword", ((FindCriteria)cri).getKeyword())
+				.build();
+		
+		return uriComponents.toUriString();
+	}
 	
-	
-	
+
 	//setter, getter
 	public int getStartPage() {
 		return startPage;

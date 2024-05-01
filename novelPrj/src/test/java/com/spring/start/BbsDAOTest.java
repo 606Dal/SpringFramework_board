@@ -4,10 +4,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -16,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.spring.dao.BbsDAO;
 import com.spring.vo.BbsVO;
+import com.spring.vo.FindCriteria;
 import com.spring.vo.PageCriteria;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -25,7 +26,7 @@ public class BbsDAOTest {
 	@Inject
 	private BbsDAO bdao; //impl에서 @Repository를 써서 DAO로 인식시킨 걸 주입받음
 	
-	private static Logger logger = LoggerFactory.getLogger(BbsDAOTest.class);
+	private static Logger logger = LogManager.getLogger(BbsDAOTest.class);
 	
 /*	@Test
 	public void insertTest() throws Exception {
@@ -101,7 +102,7 @@ public class BbsDAOTest {
 		logger.info("/bbs/read?bid=100&numPerPage=20");
 		logger.info("uriComponents : " + uriComponents.toString());
 	}
- */
+
 	//더 많이 사용하는 방식
 	@Test
 	public void uriTest2() throws Exception {
@@ -116,6 +117,25 @@ public class BbsDAOTest {
 		//위 처럼 지정해주면 아래처럼 uri를 생성해 줌
 		logger.info("/bbs/read?bid=100&numPerPage=20");
 		logger.info("uriComponents : " + uriComponents.toString());
+	}
+*/
+	@Test
+	public void testFind() throws Exception{
+		FindCriteria cri = new FindCriteria();
+		cri.setPage(1); //첫 페이지 1
+		cri.setFindType("S"); // 찾는 유형 : (내용)
+		cri.setKeyword("테스트"); // 검색어
+		
+		logger.info("************ 글 목록 테스트 출력 ************");
+		
+		List<BbsVO> list = bdao.listFind(cri);
+		//실제 검색은 아직 안 되지만 목록을 10개 출력하면 제대로 동작 중인 것
+		for(BbsVO bvo : list) {
+			logger.info("**"+bvo.getBid() + ": " + bvo.getSubject());
+		}
+		
+		logger.info("************ 테스트 Data 개수 출력 ************");
+		logger.info("**CountData: " + bdao.findCountData(cri));
 	}
 	
 }

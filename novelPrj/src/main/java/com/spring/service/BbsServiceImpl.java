@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.dao.BbsDAO;
 import com.spring.vo.BbsVO;
+import com.spring.vo.FindCriteria;
 import com.spring.vo.PageCriteria;
 
 //어노테이션 안 잊게 주의
@@ -29,7 +30,7 @@ public class BbsServiceImpl implements BbsService {
 	}
 	//글 수정
 	@Override
-	public void modyfi(BbsVO bvo) throws Exception {
+	public void modify(BbsVO bvo) throws Exception {
 		bdao.update(bvo);
 	}
 	//글 삭제
@@ -53,4 +54,14 @@ public class BbsServiceImpl implements BbsService {
 		return bdao.countData(pCria);
 	}
 
+	//검색된 목록
+	@Override
+	public List<BbsVO> listFind(FindCriteria findCri) throws Exception {
+		return bdao.listFind(findCri);
+	}
+	//검색된 글의 총 개수
+	@Override
+	public int findCountData(FindCriteria findCri) throws Exception {
+		return bdao.findCountData(findCri);
+	}
 }

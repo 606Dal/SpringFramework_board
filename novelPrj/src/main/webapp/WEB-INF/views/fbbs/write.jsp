@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
+
 <html>
-<head>
+    <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Clean Blog - Start Bootstrap Theme</title>
+        <title>글쓰기</title>
         <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/assets/favicon.ico" />
         <!-- Font Awesome icons (free version)-->
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -16,7 +16,6 @@
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="${pageContext.request.contextPath}/resources/css/styles.css" rel="stylesheet" />
-    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     </head>
     <body>
         <!-- Navigation-->
@@ -38,15 +37,54 @@
             </div>
         </nav>
         <!-- Page Header-->
-        <header class="masthead" style="background-image: url('${pageContext.request.contextPath}/resources/assets/img/clarisse-meyer-jKU2NneZAbI-unsplash.jpg')">
+        <header class="masthead" style="background-image: url('${pageContext.request.contextPath}/resources/assets/img/home-bg.jpg')">
             <div class="container position-relative px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
-                        <div class="site-heading">
-                            <h1>Novel Blog</h1>
-                            <span class="subheading">A Blog Theme by Start Bootstrap</span>
+                        <div class="page-heading">
+                            <h1>글 쓰기</h1>
                         </div>
                     </div>
                 </div>
             </div>
         </header>
+        <!-- Main Content-->
+        <main class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <p>읽은 책에 대하여 자유롭게 작성해 주세요.</p>
+                        <div class="my-5">
+                            <!-- * * * * * * * * * * * * * * *-->
+                            <!-- * * SB Forms Contact Form * *-->
+                            <!-- * * * * * * * * * * * * * * *-->
+                            <!-- This form is pre-integrated with SB Forms.-->
+                            <!-- To make this form functional, sign up at-->
+                            <!-- https://startbootstrap.com/solution/contact-forms-->
+                            <!-- to get an API token!-->
+                     <!-- 글 작성 부분 -->
+                            <form action="write" method="post">
+                                <div class="form-floating">
+                                    <input class="form-control" name="subject" type="text" placeholder="Enter subject..."/>
+                                    <label for="subject">제목</label>
+                                </div>
+                                <div class="form-floating">
+                                    <input class="form-control" name="writer" type="text" placeholder="Enter your name..." />
+                                    <label for="writer">작성자</label>
+                                </div>
+                                <div class="form-floating">
+                                    <textarea class="form-control" name="content" placeholder="Enter your message here..." style="height: 12rem" ></textarea>
+                                    <label for="content">내용</label>
+                                </div>
+                                <br>
+                                <!-- Submit Button-->
+                                <button class="btn btn-primary" id="submitButton" type="submit" style="font-size: medium;">등록</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+
+<%@ include file="../include/footer.jsp" %>
