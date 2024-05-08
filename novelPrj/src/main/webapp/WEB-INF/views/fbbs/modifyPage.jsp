@@ -108,8 +108,8 @@
         		});
         		//취소 버튼
         		$("#btn_cancle").on("click", function(){
-        			self.location="/fbbs/list?page=${fCri.page}&numPerPage=${fCri.numPerPage}"
-        				+ "&findType=${fCri.findType}&keyword=${fCri.keyword}";
+        			self.location="/fbbs/readPage?page=${fCri.page}&numPerPage=${fCri.numPerPage}"
+        				+ "&findType=${fCri.findType}&keyword=${fCri.keyword}&bid=${bbsVO.bid}";
         		});
         	});
         	

@@ -18,6 +18,22 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="${pageContext.request.contextPath}/resources/css/styles.css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style type="text/css">
+		/* #modifyDiv{
+			width: 500px;
+			height: 100px;
+			background-color: rgba(255, 255, 128, .5);
+			position: absolute;
+			top:20%;
+			left: 30%;
+			 padding: 20px;
+			 z-index: 100;
+			display: none;
+		} */
+		#reList {
+		font-size: 15px;
+		}
+	</style>
     </head>
     <body>
         <!-- Navigation-->
@@ -82,11 +98,61 @@
 					        <button class="btn btn-danger me-3" id="submitButton" type="submit" style="font-size: medium;">삭제하기</button>
 					        <button class="btn btn-primary" id="submitButton" type="submit" style="font-size: medium;">목록 →</button>
 				        </div>
+				        
+				        <!-- 댓글 -->
+				        <div class="post-preview mt-5">
+	                    	<h5 class="post-title">댓글</h5>
+	                    	<!-- 댓글 목록 -->
+                           	<ul id="reply" class="list-group">
+							</ul>
+							<!-- 페이징 목록 -->
+							<div class="d-flex justify-content-center my-2">
+	                    		<nav aria-label="Page navigation">
+									<ul id="pgeNumList" class="pagination">
+									</ul>
+								</nav>
+							</div>
+	                    </div>
+	                    <!-- Divider-->
+	                    <hr class="my-4" />
+	                    
+	                    <div class="form-floating">
+                            <input class="form-control" name="replyer" id="writer" type="text" placeholder="Enter your name..." />
+                            <label for="writer">작성자</label>
+                        </div>
+                        <div class="form-floating">
+                            <textarea class="form-control" name="replyContent" id="addReContent" placeholder="Enter your message here..." style="height: 6rem" ></textarea>
+                            <label for="addReContent">댓글을 입력해 주세요</label>
+                        </div>
+                        <br>
+                        <!-- Submit Button-->
+                        <button class="btn btn-outline-dark btn-sm" id="submitBtn" type="submit" style="font-size: medium;">댓글 등록</button>
+                        
+                        <%-- 띄워줄 수정 창 --%>
+                        <div class="modal" tabindex="-1" id="modifyDiv">
+						  <div class="modal-dialog" >
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <h5 class="modal-title">번 댓글</h5>
+						        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						      </div>
+						      <div class="modal-body">
+						        <label for="reContent">수정 내용:</label>
+						        <textarea class="form-control" name="reContent" id="reContent" placeholder="Enter your message here..." style="height: 6rem" ></textarea>
+						      </div>
+						      <div class="modal-footer">
+						        <button type="button" class="btn btn-outline-success" id="reModifyBtn">수정</button>
+						        <button type="button" class="btn btn-outline-danger" id="reDelBtn">삭제</button>
+						        <button type="button" class="btn btn-outline-dark"  data-bs-dismiss="modal" id="closeBtn">닫기</button>
+						      </div>
+						    </div>
+						  </div>
+						</div>
                     </div>
                 </div>
             </div>
         </article>
-        <script>
+        <script type="text/javascript">
         	//$=jQuery
         	$(document).ready(function(){ //현재 문서(document)가 준비가 되면 다음 function을 시행
         		var frmObj = $("form[role='form']"); // role이 form으로 설정된 form을 선택
@@ -112,6 +178,193 @@
         		});
         		
         	});
+        	
+        //댓글
+        	var bid = ${bbsVO.bid};
+        	
+        	getPgeNum(1);//임시 호출
+        	
+        	function reListAll(){
+        		//""안에는 댓글 List 가져오는 url(ReplyController에서 지정했던 경로)
+        		$.getJSON("/replies/selectAll/"+bid,function(data){
+        			//console.log(data.length); //리스트의 개수
+        			var str = "";
+        			
+        			$(data).each(function(){
+        				str += "<li data-rebid='" + this.rebid + "' id='reList' class='list-group-item'>"
+        					+ this.rebid + " | Posted by <a href='#!'>" + this.replyer
+        					+ "</a><br> <span id='spanReCon'>" + this.replyContent + "</span>"
+        					+"<button type='button' class='btn btn-outline-success btn-sm ms-2 float-end'>수정</button>"
+        					+ "</li>";
+        			});
+        			
+        			$("#reply").html(str);
+        		});
+        	}//reListAll()
+        	
+        //페이지 버튼(목록 번호 얻어오기)
+        	function getPgeNum(page){
+        		$.getJSON("/replies/"+bid+"/"+page, function(data){
+        			
+        			console.log(data.reList.length);
+        			
+        			var str="";
+        			
+        			$(data.reList).each(function(){
+        				str += "<li data-rebid='" + this.rebid + "' id='reList' class='list-group-item'>"
+        					+ this.rebid + " | Posted by <a href='#!'>" + this.replyer
+        					+ "</a><br> <span id='spanReCon'>" + this.replyContent + "</span>"
+        					+"<button type='button' class='btn btn-outline-success btn-sm ms-2 float-end'>수정</button>"
+        					+ "</li>";
+        			});
+        			
+        			$("#reply").html(str);
+        			
+        			showPageNum(data.pagingMaker)
+        		});
+        	}//getPgeNum()
+        	
+        //페이지 버튼 보기
+        	function showPageNum(pagingMaker){
+        		var str = "";
+        		//이전 버튼
+        		if(pagingMaker.prev){
+        			str +="<li class='page-item'><a class='page-link' href='"+(pagingMaker.startPage-1)+"'>◀</a></li>";
+        		}
+        		for(var i=pagingMaker.startPage, end=pagingMaker.endPage; i <= end; i++){
+        			str += "<li class='page-item'><a class='page-link' href='"+i+"'>"+i+"</a></li>";
+        		}
+        		//다음 버튼
+        		if(pagingMaker.next){
+        			str +="<class='page-item'li><a class='page-link' href='"+(pagingMaker.endPage+1)+"'>▶</a></li>";
+        		}
+        		
+        		$("#pgeNumList").html(str);
+        		
+        	}//showPageNum()
+        	
+        //페이지 버튼 번호 클릭 시 이동
+        	var rePage = 1;
+        	
+        	$("#pgeNumList").on("click", "a", function(e) {
+        		e.preventDefault(); // <a> 태그의 화면 전환이 일어나지 않게 하는 메서드
+        		
+        		//rePage = $(this).parent().attr("href"); //this = button
+        		rePage = $(this).attr("href");
+        		
+        		getPgeNum(rePage);
+        	});
+        	
+        //댓글 작성 버튼 클릭 시 처리
+        	$("#submitBtn").on("click", function(){
+        		
+        		var reWriter = $("#writer").val();
+        		var reContent = $("#addReContent").val();
+        		
+        		$.ajax({
+        			type : 'post',
+        			url : '/replies',
+        			headers:{
+        				"Content-Type" : "application/json",
+        				//X-HTTP-Method-Override : 필터 등록 후 사용 가능. REST가 적용 안 되는 브라우저를 위해 사용
+        				"X-HTTP-Method-Override" : "POST"
+        			},
+        			
+        			dataType : 'text',
+        				//stringify : JSON 형태로 데이터를 만들어서 전송
+        			data : JSON.stringify({
+        				bid : bid,
+        				replyer : reWriter,
+        				replyContent : reContent
+        			}),
+        			
+        			success : function(result){
+        				if(result == 'Success'){
+        					//alert("댓글 등록 성공!")
+        					reListAll();
+        					//댓글 등록 성공 시 내용 초기화
+        					$("#writer").val("");
+        					$("#addReContent").val("");
+        				}
+        			}
+        		});
+        	});
+        	
+        //댓글 수정 버튼 - <ul id="reply"> / <li id="reList"> 안의 버튼 지정
+        	//댓글 작성 후에 list가 나와야 수정 버튼이 생김. 그래서 이미 있는 ul에서 시작해서 이벤트 위임
+        	$("#reply").on("click", "#reList button", function(){
+        		var li = $(this).parent(); //리스트 부분
+        		
+        		var rebid = li.attr("data-rebid");
+        		var reContent = $("#spanReCon").text();
+        		
+        		//alert("댓글번호 : "+rebid+" 수정할 내용 :"+reContent);
+        		//수정 창
+        		$(".modal-title").html(rebid);
+        		$("#reContent").val(reContent);
+        		$("#modifyDiv").show("slow");
+        	});
+        	
+        //수정 창 - 삭제버튼 클릭 시 처리
+        	$("#reDelBtn").on("click", function(){
+        		
+        		var rebid = $(".modal-title").html();
+        		var reContent = $("#reContent").val();
+        		
+        		$.ajax({
+        			type:'delete',
+        			url : '/replies/'+rebid,
+        			headers:{
+        				"Content-Type" : "application/json",
+        				"X-HTTP-Method-Override" : "DELETE"
+        			},
+        			dataType : 'text',
+        			success : function(result){
+        				console.log("result: " + result);
+        				if(result == 'Success'){
+        					alert("댓글 삭제 성공!");
+        					$("#modifyDiv").hide("slow");//수정 창 다시 닫음
+        					reListAll();
+        				}
+        			}
+        		});
+        	});
+        	
+        //수정 창 - 수정버튼 클릭 시 처리
+        	$("#reModifyBtn").on("click", function(){
+        		
+        		var rebid = $(".modal-title").html();
+        		var reContent = $("#reContent").val();
+        		
+        		$.ajax({
+        			type:'put',
+        			url : '/replies/'+rebid,
+        			headers:{
+        				"Content-Type" : "application/json",
+        				"X-HTTP-Method-Override" : "PUT"
+        			},
+        			dataType : 'text',
+        			data : JSON.stringify({replyContent : reContent}),
+        			success : function(result){
+        				console.log("result: " + result);
+        				if(result == 'Success'){
+        					//alert("댓글 수정 성공!");
+        					$("#modifyDiv").hide("slow");//수정 창 다시 닫음
+        					reListAll();
+        				}
+        			}
+        		});
+        	});
+        
+        	//수정 창 - 닫기 버튼 클릭 시 처리
+        	$("#closeBtn").on("click", function(){
+        		$("#modifyDiv").hide("slow");
+        	});
+        	$(".btn-close").on("click", function(){
+        		$("#modifyDiv").hide("slow");
+        	});
+        	
+        	
         </script>
 
 

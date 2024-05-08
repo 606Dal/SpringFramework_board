@@ -2,8 +2,8 @@ package com.spring.controller;
 
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,7 +21,7 @@ import com.spring.vo.PagingMaker;
 @RequestMapping("/bbs/*")//게시판 관련 공통 경로
 public class BbsController {
 
-	private static final Logger logger = LoggerFactory.getLogger(BbsController.class);
+	private static final Logger logger = LogManager.getLogger(BbsController.class);
 	
 	//root.context에 스캔 등록 해놔서 주입 가능
 	@Inject

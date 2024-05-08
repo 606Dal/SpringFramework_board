@@ -10,7 +10,7 @@ public class PagingMaker {
 	private boolean prev; //이전 버튼을 나타내는 부울 값
 	private boolean next; //다음 버튼을 나타내는 부울 값
 	
-	private int displyPageNum = 10;  // 페이지 버튼에 나타낼 페이지 번호의 개수
+	private int displayPageNum = 10;  // 페이지 버튼에 나타낼 페이지 번호의 개수
 	
 	private PageCriteria cri;
 	
@@ -26,9 +26,9 @@ public class PagingMaker {
 	
 	private void getPagingData() {
 		//endPage 구하기 Math.올림(현재 페이지 번호/페이지 버튼에 나타낼 페이지 번호의 개수) * 페이지 버튼에 나타낼 페이지 번호의 개수
-		endPage = (int)(Math.ceil(cri.getPage()/(double)displyPageNum) * displyPageNum);
+		endPage = (int)(Math.ceil(cri.getPage()/(double)displayPageNum) * displayPageNum);
 	
-		startPage = (endPage - displyPageNum) + 1;
+		startPage = (endPage - displayPageNum) + 1;
 		//버튼의 끝 페이지 = 전체 글의 수 / 한 페이지 당 보여줄 글의 수
 		int finalEndPage = (int)(Math.ceil(totalData/(double)cri.getNumPerPage()));
 		
@@ -97,12 +97,12 @@ public class PagingMaker {
 		this.next = next;
 	}
 
-	public int getDisplyPageNum() {
-		return displyPageNum;
+	public int getDisplayPageNum() {
+		return displayPageNum;
 	}
 
-	public void setDisplyPageNum(int displyPageNum) {
-		this.displyPageNum = displyPageNum;
+	public void setDisplayPageNum(int dispalyPageNum) {
+		this.displayPageNum = dispalyPageNum;
 	}
 
 	public int getTotalData() {
