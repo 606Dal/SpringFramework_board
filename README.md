@@ -3,17 +3,15 @@
 #### 개발 환경
 운영체제 : windows10
 
-개발 도구 : STS4
-
-버전
-1. JavaSE-11
-2. springframework 5.2.3.RELEASE
-3. 데이터베이스 : MySQL 8.0.34
-4. WAS : Apache Tomcat 9.0
-5. Bootsorap5 v5.2.3 (템플릿 이용)
-6. mybatis 3.5.9
-7. slf4j 2.0.9 / log4j 2.18.0
-8. jackson 2.15.2
+1. STS4
+2. JavaSE-11
+3. springframework
+4. 데이터베이스 : MySQL
+5. WAS : Apache Tomcat 9.0
+6. Bootsorap5 (템플릿 이용)
+7. mybatis
+8. slf4j / log4j
+9. jackson
 ---
 기간 : 2024-04-15 ~ 26(중간 저장)
 * 게시 글 목록 / 글 읽기 / 수정 / 삭제
